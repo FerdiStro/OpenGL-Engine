@@ -1,7 +1,7 @@
 package com.engine.core;
 
-import org.joml.Math;
-import org.joml.Matrix4f;
+//import org.joml.Math;
+//import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 public class WindowManager{
-    public static final float FOV = Math.toRadians(60);
+//    public static final float FOV = Math.toRadians(60);
     public static final float Z_NEAR = 0.01f;
     public static final float Z_FAR = 1000f;
 
@@ -20,7 +20,7 @@ public class WindowManager{
 
     private boolean resize, vSync;
 
-    private final Matrix4f projectionMatrix =  new Matrix4f();;
+//    private final Matrix4f projectionMatrix =  new Matrix4f();
 
     public WindowManager(String title, int width, int height, boolean vSync) {
         this.title = title;
@@ -149,18 +149,18 @@ public class WindowManager{
         this.window = window;
     }
 
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
-    }
-
-    public Matrix4f updateProjectionMatrix(){
-        float aspectRatio =  (float) width/height;
-        return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
-    }
-    public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height){
-        float aspectRatio =  (float) width/height;
-        return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR );
-    }
+//    public Matrix4f getProjectionMatrix() {
+//        return projectionMatrix;
+//    }
+//
+//    public Matrix4f updateProjectionMatrix(){
+//        float aspectRatio =  (float) width/height;
+//        return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+//    }
+//    public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height){
+//        float aspectRatio =  (float) width/height;
+//        return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR );
+//    }
 
 
 
