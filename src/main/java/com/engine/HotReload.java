@@ -1,11 +1,11 @@
 package com.engine;
 
-import com.engine.Utils.Coords2D;
-import com.engine.Utils.Coords3D;
-import com.engine.Utils.ScreenObject;
-import com.engine.Utils.Triangle;
+import com.engine.utils.JsonData;
+import com.engine.utils.ScreenObject;
+import com.engine.utils.Vector3D;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import lombok.extern.slf4j.Slf4j;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -15,10 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
@@ -28,6 +25,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
+@Slf4j
 public class HotReload {
 
     private static final String vertexShaderURL = "/home/ferdistro/Projects/Private/OpenGL-Engine/src/main/java/com/engine/shaders/test_vertex.vert";
@@ -35,8 +33,8 @@ public class HotReload {
     private static final String verticaslURL = "/home/ferdistro/Projects/Private/OpenGL-Engine/src/main/java/com/engine/shaders/3DVerticals";
     private static final String jsonCoordinateList = "src/main/java/com/engine/shaders/Cords.json";
     private final Gson gson = new Gson();
-    private final float angle = 0f;
     float moveX = 0;
+    private float angle = 0f;
     private long window;
     private int shaderProgram, vao;
     private HotReloadUpdate hotReloadInterface;
@@ -81,14 +79,14 @@ public class HotReload {
             hotReloadInterface.reload();
 
             //Move Object
-            moveX = moveX + 0.1f;
-            if(moveX > 5){
-                moveX = -5.0f;
-            }
+//            moveX = moveX + 0.1f;
+//            if (moveX > 5) {
+//                moveX = -5.0f;
+//            }
 
 
             // Update Transformation Matrices
-//            angle += 0.01f;
+            angle += 0.01f;
 
             //Camera distance
             Matrix4f view = new Matrix4f().translate(0, 0, -10);
@@ -162,30 +160,27 @@ public class HotReload {
 
     private void loadVerticalsObject() throws IOException {
         String json = loadFile(jsonCoordinateList);
-        Type listType = new TypeToken<ArrayList<Coords2D>>() {
-        }.getType();
-        ArrayList<Coords2D> coordList = new Gson().fromJson(json, listType);
+        JsonData jsonData = new Gson().fromJson(json, TypeToken.getParameterized(JsonData.class).getType());
 
-
-        List<Triangle> triangles = new ArrayList<>();
-        Coords3D[] coords3DS = new Coords3D[3];
-        for (int i = 0; i < coordList.size(); i++) {
-            Coords2D coords2D = coordList.get(i);
-            Coords3D coords3D = new Coords3D(coords2D.getSign(), coords2D.getTriangle(), coords2D.getX(), coords2D.getY(), coords2D.getZ());
-            coords3DS[i % 3] = coords3D;
-            if ((i + 1) % 3 == 0) {
-                Triangle triangle = new Triangle(coords3D.getTriangle());
-                triangle.setPoints(coords3DS);
-                triangles.add(triangle);
+        ScreenObject screenObject = null;
+        if (jsonData.aligns() == null) {
+            if (jsonData.cords() == null) {
+                log.error("CordList out of json is null");
+                return;
             }
+            screenObject = ScreenObject.getScreenObjectCordList(jsonData.cords());
+        } else {
+            screenObject = ScreenObject.getScreenObjectAligns(jsonData.aligns(), jsonData.cords());
         }
 
-        ScreenObject screenObject = new ScreenObject(triangles);
+        if (screenObject == null) {
+            log.error("ScreenObject is null");
+            return;
+        }
 
-        screenObject.moveX(moveX);
+        screenObject.moveVector3D(new Vector3D(moveX, 0, 0));
 
         float[] primitiveArray = screenObject.toPrimitiveArray();
-
 
         vao = glGenVertexArrays();
         int vbo = glGenBuffers();
@@ -199,6 +194,7 @@ public class HotReload {
 
 
     }
+
 
     private void loadShaderProgram() throws IOException {
         String vertex = loadFile(vertexShaderURL);
