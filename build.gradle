@@ -27,8 +27,12 @@ var lwjglNatives = "natives-linux"
 dependencies {
 
     implementation("org.joml:joml:1.10.5")
+    implementation("com.google.code.gson:gson:2.13.1")
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'org.slf4j:slf4j-simple:2.0.13'
 
     implementation("org.lwjgl:lwjgl:$lwjglVersion")
     implementation("org.lwjgl:lwjgl-opengl:$lwjglVersion")

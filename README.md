@@ -1,11 +1,11 @@
 # OpenGL-Engine
-Basic Game Engine with OpenGL. Learning some new java- and OpenGL-skills
+Basic Renderer for better understanding openGL
 
 ---
 
-##Build
+## Build
 
 Building without Test: `./gradlew clean build -x test`<br>
-Java-version: `java 15` <br>
+Java-version: `java 21` <br>
 
 ---
